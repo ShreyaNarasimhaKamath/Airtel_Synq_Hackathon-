@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 Sync_V1.xlsx
+matlab/results/
+slprj/
+*.slxc
