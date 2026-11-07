@@ -1,0 +1,76 @@
+{
+ "sat_succ_min": 34.3,
+ "sat_succ_max": 38.7,
+ "sat_succ_mean": 36.60952380952381,
+ "sat_succ_std": 1.0582576704433349,
+ "sat_load_min": 97.8,
+ "sat_load_max": 99.1,
+ "n_sat": 21,
+ "demand_over_cap_last_match": 2.7315296566077003,
+ "R4_peak_mbps": 20.268711549537265,
+ "R5_peak_mbps": 191.88746211390952,
+ "ps_r2": 0.9843470675147031,
+ "upi_fit": [
+  1.1263854763884436,
+  0.07031616562058053,
+  192.19803197686556,
+  3852.4601381109896
+ ],
+ "anchor_capacity_ratio": 8.0,
+ "phases": {
+  "Crowd building up": {
+   "succ_last": 98.71428571428571,
+   "succ_final_current": 92.97098487944423,
+   "succ_final_ours": 99.2,
+   "spd4_last": 6.914285714285714,
+   "spd4_ours": 16.302083797274516,
+   "spd5_ours": 161.5893838011984,
+   "upi_last": 1.84,
+   "upi_final_current": 6.805650184515947,
+   "upi_ours": 1.1490933478777128,
+   "rho4_ours": 0.19570201798808015,
+   "rho5_ours": 0.1578950389928309
+  },
+  "Innings break": {
+   "succ_last": 36.357142857142854,
+   "succ_final_current": 23.796190476190475,
+   "succ_final_ours": 99.2,
+   "spd4_last": 0.9714285714285714,
+   "spd4_ours": 4.7712188249353185,
+   "spd5_ours": 73.5138012749739,
+   "upi_last": 7.11,
+   "upi_final_current": 6.42055280184163,
+   "upi_ours": 1.1491733244368374,
+   "rho4_ours": 0.7646017699115045,
+   "rho5_ours": 0.616891064871481
+  },
+  "Final over": {
+   "succ_last": 36.91428571428572,
+   "succ_final_current": 23.796190476190475,
+   "succ_final_ours": 99.2,
+   "spd4_last": 0.942857142857143,
+   "spd4_ours": 4.7712188249353185,
+   "spd5_ours": 73.5138012749739,
+   "upi_last": 6.82,
+   "upi_final_current": 6.3519603874928166,
+   "upi_ours": 1.146910251626192,
+   "rho4_ours": 0.7646017699115045,
+   "rho5_ours": 0.616891064871481
+  },
+  "Post-match": {
+   "succ_last": 36.55714285714286,
+   "succ_final_current": 23.796190476190475,
+   "succ_final_ours": 99.2,
+   "spd4_last": 0.9142857142857144,
+   "spd4_ours": 4.7712188249353185,
+   "spd5_ours": 73.5138012749739,
+   "upi_last": 5.23,
+   "upi_final_current": 6.388783746695378,
+   "upi_ours": 1.146910251626192,
+   "rho4_ours": 0.7646017699115045,
+   "rho5_ours": 0.616891064871481
+  }
+ },
+ "ber_256_at_30dB_mc": 0.019633125,
+ "ber_256_at_30dB_th": 0.017695235849519875
+}
