@@ -4,6 +4,16 @@
 
 5G and 4G capacity for a 1,00,000-fan cricket final, on a ₹4 crore budget, built from Airtel's own site counters.
 
+[**Submission deck (PDF)**](Airtel_Sync_Stadium_Surge.pdf) · [PPTX](Airtel_Sync_Stadium_Surge.pptx) · [**Demo video (65 s)**](docs/demo.mp4) · [Architecture (draw.io)](docs/architecture.drawio)
+
+---
+
+## Demo
+
+[![Demo: the stadium fills, crowd loss rises, and the controller switches from FFR to reuse-1](docs/demo_preview.gif)](docs/demo.mp4)
+
+*Click the preview for the full 65-second video.* It walks through the diagnosis on Airtel's counters, the study running, the seat-zone reuse simulation as the stadium fills, the M-QAM / Rayleigh link level, and current vs ours.
+
 ---
 
 ## Problem statement
@@ -103,7 +113,7 @@ At the link level, Monte Carlo BER for Gray M-QAM over flat Rayleigh fading matc
 
 ```
 ├── Airtel_Sync_Stadium_Surge.pdf / .pptx    submission deck
-├── docs/        architecture.drawio, architecture.png/.svg, method.png/.svg
+├── docs/        architecture.drawio (+ png/svg), method diagram, demo.mp4, demo_preview.gif
 ├── matlab/      full study + Simulink model builder (see matlab/README.md)
 ├── python/      the same study in Python (numpy, scipy, matplotlib)
 └── figures/     plots used in the deck
