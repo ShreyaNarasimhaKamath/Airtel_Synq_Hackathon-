@@ -4,7 +4,8 @@ function R = airtel_diagnosis(D, outdir)
 %   2) 4G user speed vs load                -> M/G/1 processor sharing fit
 %   3) UPI failure vs load                  -> exponential fit
 if nargin < 2, outdir = '.'; end
-sat = D.ld_lm > 95;
+is78 = ismember(D.site, {'M1', 'M2', 'M3', 'M5'});   % only these sites carry n78
+sat = D.ld_lm > 95 & is78;
 R.n_sat     = nnz(sat);
 R.succ_min  = min(D.succ(sat));  R.succ_max = max(D.succ(sat));
 R.succ_mean = mean(D.succ(sat)); R.succ_std = std(D.succ(sat), 1);
@@ -24,7 +25,7 @@ for i = 1:numel(phases)
     m = strcmp(D.phase, phases{i});
     R.ld_lm_avg(i) = mean(D.ld_lm(m & noM6));
     R.ld_nd_avg(i) = mean(D.ld_nd(m));
-    R.succ_avg(i)  = mean(D.succ(m & noM6));
+    R.succ_avg(i)  = mean(D.succ(m & is78));
     R.s4_avg(i)    = mean(D.s4_lm(m & noM6));
 end
 R.phases = phases;
@@ -44,10 +45,11 @@ fprintf('5G peak (normal day)            : %.0f Mbps\n', R.R5);
 fig = figure('Name', 'Airtel diagnosis', 'Position', [100 100 1000 380]);
 subplot(1, 2, 1);
 plot(D.ld_nd, 99.2 * ones(size(D.ld_nd)), 'o', 'Color', [.6 .6 .6], 'MarkerFaceColor', [.6 .6 .6]); hold on;
-plot(D.ld_lm, D.succ, 'o', 'Color', [.89 0 0], 'MarkerFaceColor', [.89 0 0]);
+plot(D.ld_lm(is78), D.succ(is78), 'o', 'Color', [.89 0 0], 'MarkerFaceColor', [.89 0 0]);
+plot(D.ld_lm(~is78), D.succ(~is78), 'o', 'Color', [.6 .6 .6]);
 xlabel('4G anchor (B3) load %'); ylabel('5G connection success %'); ylim([0 105]); grid on;
-title(sprintf('Attach collapses: %d saturated points at %.0f-%.0f%%', R.n_sat, R.succ_min, R.succ_max));
-legend('Normal day', 'Last match', 'Location', 'southwest');
+title(sprintf('n78 sites: %d saturated readings at %.0f-%.0f%%', R.n_sat, R.succ_min, R.succ_max));
+legend('Normal day', 'Last match, n78 sites', 'No n78 (excluded)', 'Location', 'southwest');
 subplot(1, 2, 2);
 plot(rho * 100, r, 'o', 'Color', [.89 0 0], 'MarkerFaceColor', [.89 0 0]); hold on;
 xx = linspace(0, 1, 100); plot(xx * 100, R.R4 * (1 - xx), 'k-', 'LineWidth', 1.6);

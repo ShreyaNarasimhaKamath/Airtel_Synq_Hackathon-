@@ -31,7 +31,7 @@ Tasks:
 
 ## Approach
 
-**Diagnosis.** We started with Sync_V1.xlsx, the dataset that comes with the Airtel case brief (8 sites, 4 match moments). In all 21 readings where the anchor was saturated, 5G attach sat between 34 and 39%, with a spread of 1.1. M6, the one site that stayed at 60% anchor load, kept 99.2%. That pattern fits an admission limit on B3, so 5G capacity was never the constraint. 4G speed follows r = 20.3(1 - ρ) Mbps across both days (R² = 0.98), which matches the 1 Mbps seen at peak.
+**Diagnosis.** We started with Sync_V1.xlsx, the dataset that comes with the Airtel case brief (8 sites, 4 match moments). The site list shows only M1, M2, M3 and M5 carry n78, so 5G figures reported for M4, M6, S1 and S2 are left out. At those four sites, all 12 readings with a saturated anchor sit between 35.2 and 38.7% 5G attach (σ 0.9), while the same sites at 58-72% load show 99.2%. A level that flat fits an admission limit on B3, so 5G capacity was never the constraint. The sheet has no readings between 81% and 97% load, so the exact tipping point is unknown and we plan at 80%. 4G speed follows r = 20.3(1 - ρ) Mbps across both days (R² = 0.98), which matches the 1 Mbps seen at peak.
 
 **Anchor changes.** B1 and B40 join B3 as NSA anchors, EN-DC phones get reserved anchor room, LTE-only phones move to other bands, and the stadium cluster gets SA on n78. Anchor capacity goes up about 8 times.
 
@@ -47,6 +47,16 @@ Tasks:
 | 0.5 | 7.1 | 11.0 | **13.2** |
 
 Capacity in Gbps for 24 cells and 5,040 users, averaged over 5 seeds. The event controller moves from FFR to reuse-1 as ticket scans show the stands filling.
+
+**How far the plan holds.** Peak load of the proposed cells for different online shares and spectral efficiency (SE):
+
+| Online at peak | SE as planned | SE 25% lower | SE 40% lower |
+|---|---|---|---|
+| 15% | 51% / 64% | 69% / 85% | 86% / 106% |
+| 18% (case value) | 62% / 76% | 82% / 102% | 103% / 127% |
+| 25% | 86% / 106% | 114% / 142% | 143% / 177% |
+
+5G / 4G load. 4G is the tight layer and fills at about 24% online. The D-30 dry run measures real SE and load, and the ₹0.48 Cr reserve can buy up to 6 more small cells if needed.
 
 **Payments and 112.** PCC rules put NPCI and bank traffic ahead of video, merchant SIMs get a higher ARP, QCI 1/5 keeps some headroom, AC10 is never barred, and normal users see barring only above 90% load.
 
@@ -64,7 +74,7 @@ Models fitted on the last match, then run for the final (1.54 times the crowd).
 
 | At peak | Last match | Final, no change | Final, our plan |
 |---|---|---|---|
-| 5G connection success | 36.4% | 23.8% | **99.2%** |
+| 5G connection success | 36.2% | 24.0% | **99.2%** |
 | 4G user speed | 0.97 Mbps | below 1 Mbps | **4.8 Mbps** |
 | 5G user speed | 12 to 28 Mbps | | **about 70 Mbps** |
 | UPI failure | 7.1% | about 7% | **about 1.2%** |
@@ -86,6 +96,7 @@ docs/      architecture.drawio (+ png, svg), method diagram, demo video
 matlab/    full study and the Simulink model builder (see matlab/README.md)
 python/    same study in Python
 figures/   plots used in the deck
+notebooks/ data exploration notebook (site and phase heatmaps, 5G speed by site, sensitivity)
 ```
 
 ## Running
@@ -101,6 +112,7 @@ Python:
 pip install numpy scipy matplotlib openpyxl
 python python/airtel_analysis.py Sync_V1.xlsx figures
 python python/stadium_reuse_sim.py results.json
+python python/sensitivity.py
 ```
 
 Sync_V1.xlsx is part of the [case brief download](https://d8it4huxumps7.cloudfront.net/uploads/submissions_case/6ad9d991d8e2c_cae_study_network.zip) and is not copied into this repo.

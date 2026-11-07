@@ -35,7 +35,9 @@ succ = np.array([r[9] for r in rows])
 res = {}
 
 # ---------------- 1. diagnosis: the flat 36% ----------------
-sat = ld_lm > 95
+N78 = {"M1", "M2", "M3", "M5"}   # site list: only these four carry n78
+is78 = np.array([x in N78 for x in site])
+sat = (ld_lm > 95) & is78
 res["sat_succ_min"], res["sat_succ_max"] = float(succ[sat].min()), float(succ[sat].max())
 res["sat_succ_mean"], res["sat_succ_std"] = float(succ[sat].mean()), float(succ[sat].std())
 res["sat_load_min"], res["sat_load_max"] = float(ld_lm[sat].min()), float(ld_lm[sat].max())
@@ -44,15 +46,28 @@ res["n_sat"] = int(sat.sum())
 dc = 100 / res["sat_succ_mean"]
 res["demand_over_cap_last_match"] = dc
 
-fig, ax = plt.subplots(1, 2, figsize=(9.6, 3.5), dpi=220)
-ax[0].scatter(ld_nd, np.full_like(ld_nd, 99.2), s=18, color=GREY, label="Normal day")
-ax[0].scatter(ld_lm, succ, s=22, color=RED, label="Last match", zorder=3)
+fig, axh = plt.subplots(1, 3, figsize=(13.2, 3.5), dpi=220, gridspec_kw={"width_ratios": [1.05, 1, 1]})
+sites = ["M1", "M2", "M3", "M4", "M5", "M6", "S1", "S2"]
+H = np.array([[ld_lm[[i for i in range(len(site)) if site[i] == st and phase[i] == p][0]] for p in PH] for st in sites])
+im = axh[0].imshow(H, cmap="RdYlGn_r", vmin=0, vmax=100, aspect="auto")
+for a_ in range(H.shape[0]):
+    for b_ in range(H.shape[1]):
+        axh[0].text(b_, a_, f"{H[a_, b_]:.0f}", ha="center", va="center", fontsize=7.5)
+axh[0].set_yticks(range(8)); axh[0].set_yticklabels([st + ("" if st in N78 else "*") for st in sites], fontsize=8)
+axh[0].set_xticks(range(4)); axh[0].set_xticklabels(["Build-up", "Innings", "Final over", "Post"], fontsize=8)
+axh[0].set_title("4G anchor load %, last match (* = no n78)", loc="left", fontsize=10)
+axh[0].spines[:].set_visible(False)
+ax = axh[1:]
+ax[0].scatter(ld_nd[is78], np.full(is78.sum(), 99.2), s=18, color=GREY, label="Normal day")
+ax[0].scatter(ld_lm[is78], succ[is78], s=24, color=RED, label="Last match, n78 sites", zorder=3)
+ax[0].scatter(ld_lm[~is78], succ[~is78], s=22, facecolors="none", edgecolors=GREY, label="Sites without n78 (excluded)")
 ax[0].axhspan(res["sat_succ_min"], res["sat_succ_max"], color=RED, alpha=.08)
 ax[0].annotate(f"{res['n_sat']} saturated readings\n5G attach {res['sat_succ_min']:.0f}-{res['sat_succ_max']:.0f}% (σ = {res['sat_succ_std']:.1f})\nflat level: admission limit on B3",
-               xy=(97.5, 37), xytext=(22, 50), fontsize=8.5, arrowprops=dict(arrowstyle="->", color=DARK))
+               xy=(97.5, 37), xytext=(22, 52), fontsize=8, arrowprops=dict(arrowstyle="->", color=DARK))
 ax[0].set_xlabel("4G anchor (B3) load %"); ax[0].set_ylabel("5G connection success %")
 ax[0].set_title("5G attach vs B3 anchor load", loc="left", fontsize=10)
-ax[0].legend(frameon=False, fontsize=8.5, loc="lower left"); ax[0].set_ylim(0, 105)
+ax[0].legend(frameon=False, fontsize=7.5, loc="lower left"); ax[0].set_ylim(0, 105)
+ax[0].axvspan(81, 97, color="#000000", alpha=.04); ax[0].text(89, 70, "no data\n81-97%", ha="center", fontsize=7.5, color=GREY)
 
 # processor-sharing fit on 4G speed vs load (both days, all sites)
 L = np.r_[ld_nd, ld_lm] / 100; S = np.r_[s4_nd, s4_lm]
@@ -100,7 +115,7 @@ for p in PH:
     rho4_new = min(0.99, 6.48 / 6.78 * 0.8 * (d_final / (dc * growth)))
     rho5_new = min(0.99, 25.2 / 32.68 * 0.8 * (d_final / (dc * growth)))
     res["phases"][p] = dict(
-        succ_last=float(np.mean([s for s, q, st in zip(succ, phase, site) if q == p and st != "M6"])),
+        succ_last=float(np.mean([s for s, q, st in zip(succ, phase, site) if q == p and st in N78])),
         succ_final_current=succ_cur, succ_final_ours=succ_new,
         spd4_last=float(np.mean([s for s, q, st in zip(s4_lm, phase, site) if q == p and st != "M6"])),
         spd4_ours=ps(rho4_new, R4), spd5_ours=ps(rho5_new, R5),

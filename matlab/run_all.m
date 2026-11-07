@@ -23,6 +23,7 @@ P = current_vs_ours(R, plan, out);
 
 B = phy_qam_rayleigh(out);
 S = stadium_reuse_study(out);
+T = sensitivity_check();
 
 fig = figure('Name', 'TR 36.942');
 s = -10:0.5:35;  plot(s, tr36942_throughput(s), 'r', 'LineWidth', 1.6); grid on;
@@ -37,4 +38,4 @@ if exist('OCTAVE_VERSION', 'builtin') == 0 && license('test', 'Simulink')
     end
     run_simulink_ber(med);
 end
-save(fullfile(out, 'stadium_surge_results.mat'), 'R', 'P', 'B', 'S');
+save(fullfile(out, 'stadium_surge_results.mat'), 'R', 'P', 'B', 'S', 'T');
