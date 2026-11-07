@@ -48,10 +48,10 @@ fig, ax = plt.subplots(1, 2, figsize=(9.6, 3.5), dpi=220)
 ax[0].scatter(ld_nd, np.full_like(ld_nd, 99.2), s=18, color=GREY, label="Normal day")
 ax[0].scatter(ld_lm, succ, s=22, color=RED, label="Last match", zorder=3)
 ax[0].axhspan(res["sat_succ_min"], res["sat_succ_max"], color=RED, alpha=.08)
-ax[0].annotate(f"{res['n_sat']} saturated cell-moments:\n5G success {res['sat_succ_min']:.0f}–{res['sat_succ_max']:.0f}% (σ={res['sat_succ_std']:.1f})\n→ a hard admission cap, not random congestion",
+ax[0].annotate(f"{res['n_sat']} saturated readings\n5G attach {res['sat_succ_min']:.0f}-{res['sat_succ_max']:.0f}% (σ = {res['sat_succ_std']:.1f})\nflat level: admission limit on B3",
                xy=(97.5, 37), xytext=(22, 50), fontsize=8.5, arrowprops=dict(arrowstyle="->", color=DARK))
 ax[0].set_xlabel("4G anchor (B3) load %"); ax[0].set_ylabel("5G connection success %")
-ax[0].set_title("Airtel data: 5G attach collapses when the anchor saturates", loc="left", fontsize=10)
+ax[0].set_title("5G attach vs B3 anchor load", loc="left", fontsize=10)
 ax[0].legend(frameon=False, fontsize=8.5, loc="lower left"); ax[0].set_ylim(0, 105)
 
 # processor-sharing fit on 4G speed vs load (both days, all sites)
@@ -66,7 +66,7 @@ xx = np.linspace(0, 1, 100)
 ax[1].scatter(L * 100, S, s=18, color=RED)
 ax[1].plot(xx * 100, ps(xx, R4), color=DARK, lw=1.8, label=f"M/G/1-PS fit: r = {R4:.1f}·(1−ρ) Mbps, R² = {1 - ((S - ps(L, R4)) ** 2).sum() / ((S - S.mean()) ** 2).sum():.2f}")
 ax[1].set_xlabel("4G anchor load % (ρ)"); ax[1].set_ylabel("4G user speed (Mbps)")
-ax[1].set_title("User speed follows processor sharing", loc="left", fontsize=10)
+ax[1].set_title("4G user speed vs anchor load", loc="left", fontsize=10)
 ax[1].legend(frameon=False, fontsize=8.5)
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_airtel_diagnosis.png")
 

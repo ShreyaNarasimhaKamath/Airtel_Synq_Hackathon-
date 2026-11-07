@@ -27,7 +27,7 @@ Put Airtel's `Sync_V1.xlsx` in this folder first (it is not committed).
 ```matlab
 build_simulink_model          % creates stadium_link.slx in this folder
 open_system('stadium_link')
-run_simulink_ber              % BER sweep, 16/64/256-QAM, 0–40 dB
+run_simulink_ber              % BER sweep, 16/64/256-QAM, 0-40 dB
 ```
 
 ```
