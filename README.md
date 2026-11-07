@@ -31,13 +31,13 @@ Tasks:
 
 ## Approach
 
-**Diagnosis.** We started with Airtel's sheet (8 sites, 4 match moments). In all 21 readings where the anchor was saturated, 5G attach sat between 34 and 39%, with a spread of 1.1. M6, the one site that stayed at 60% anchor load, kept 99.2%. That pattern fits an admission limit on B3, so 5G capacity was never the constraint. 4G speed follows r = 20.3(1 - ρ) Mbps across both days (R² = 0.98), which matches the 1 Mbps seen at peak.
+**Diagnosis.** We started with Sync_V1.xlsx, the dataset that comes with the Airtel case brief (8 sites, 4 match moments). In all 21 readings where the anchor was saturated, 5G attach sat between 34 and 39%, with a spread of 1.1. M6, the one site that stayed at 60% anchor load, kept 99.2%. That pattern fits an admission limit on B3, so 5G capacity was never the constraint. 4G speed follows r = 20.3(1 - ρ) Mbps across both days (R² = 0.98), which matches the 1 Mbps seen at peak.
 
 **Anchor changes.** B1 and B40 join B3 as NSA anchors, EN-DC phones get reserved anchor room, LTE-only phones move to other bands, and the stadium cluster gets SA on n78. Anchor capacity goes up about 8 times.
 
 **Capacity.** Peak demand is 25.2 Gbps on 5G and 6.5 Gbps on 4G. We add 24 under-seat small cells, 4 COWs and 1.2 km of fibre for ₹3.52 crore, with ₹0.48 crore kept in reserve. Peak load comes out at 62% on 5G and 76% on 4G.
 
-**Seat-zone reuse.** A packed crowd adds body loss at 3.5 GHz (3GPP TR 38.901 blockage model), which isolates the under-seat cells from each other. That lets every cell use the full 100 MHz. Our simulation shows the better scheme depends on how full the stadium is:
+**Seat-zone reuse.** A packed crowd adds body loss at 3.5 GHz ([3GPP TR 38.901](https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/) models this as blockage), which isolates the under-seat cells from each other. That lets every cell use the full 100 MHz. Our simulation shows the better scheme depends on how full the stadium is:
 
 | Crowd loss (dB/m) | Reuse-3 | FFR | Reuse-1 |
 |---|---|---|---|
@@ -103,19 +103,25 @@ python python/airtel_analysis.py Sync_V1.xlsx figures
 python python/stadium_reuse_sim.py results.json
 ```
 
-Sync_V1.xlsx is Airtel's case file and is not part of this repo.
+Sync_V1.xlsx is part of the [case brief download](https://d8it4huxumps7.cloudfront.net/uploads/submissions_case/6ad9d991d8e2c_cae_study_network.zip) and is not copied into this repo.
 
 ## Assumptions
 
 - Spectral efficiency for sizing: 16 b/s/Hz for 5G massive MIMO, 7 for 5G small cells, 2.5 for LTE. The LTE figure was checked against the last match.
-- Crowd body loss of 0.3 dB/m when packed is taken from the blockage literature and has not been measured yet. The reuse result holds for anything above roughly 0.13 dB/m.
+- Crowd body loss of 0.3 dB/m when packed is our assumption. It has not been measured yet. The reuse result holds for anything above roughly 0.13 dB/m.
 - UMi NLOS path loss at 3.5 GHz, under-seat antennas 0.7 m below the handset, interference treated as Gaussian.
 - Licence and feature costs are estimates and sit inside the reserve.
 
-## References
+## Sources
 
-- 3GPP TR 38.901, channel model for 0.5 to 100 GHz, section 7.6.8 (human blockage)
-- 3GPP TR 36.942, Annex A.2 (SINR to throughput mapping)
-- 3GPP TS 38.214, MCS and CQI tables
-- 3GPP TS 37.340, EN-DC architecture
-- J. G. Proakis, Digital Communications (M-QAM error rate over Rayleigh fading)
+| What | Where it comes from |
+|---|---|
+| Site loads, speeds, 5G attach, UPI failures | Sync_V1.xlsx in the [Airtel Sync 2026 Network case brief](https://d8it4huxumps7.cloudfront.net/uploads/submissions_case/6ad9d991d8e2c_cae_study_network.zip) |
+| Fan numbers, targets, spectrum, unit costs, ₹4 Cr budget | Same case brief (Airtel_SYNC_Network_Case_Study.pdf) |
+| Human body blockage | [3GPP TR 38.901](https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/), section 7.6.8 |
+| SINR to throughput mapping | [3GPP TR 36.942](https://www.3gpp.org/ftp/Specs/archive/36_series/36.942/), Annex A.2 |
+| MCS and CQI tables (256-QAM) | [3GPP TS 38.214](https://www.3gpp.org/ftp/Specs/archive/38_series/38.214/) |
+| EN-DC (NSA) procedures | [3GPP TS 37.340](https://www.3gpp.org/ftp/Specs/archive/37_series/37.340/) |
+| M-QAM error rate over Rayleigh fading | J. G. Proakis and M. Salehi, Digital Communications, 5th ed., McGraw-Hill |
+
+Our own assumptions, not taken from any source: the spectral efficiency values used for sizing, the crowd loss per metre, and licence costs.
